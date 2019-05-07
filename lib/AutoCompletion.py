@@ -198,16 +198,14 @@ def get_http(url=None, headers=False):
     """
     succeed = 0
     if not headers:
-        headers = {'User-agent': 'XBMC/14.0 ( phil65@kodi.tv )'}
-    request = urllib2.Request(url)
-    for (key, value) in headers.iteritems():
-        request.add_header(key, value)
+        headers = {'User-agent': 'XBMC/16.0 ( phil65@kodi.tv )'}
     while (succeed < 2) and (not xbmc.abortRequested):
         try:
-            response = urllib2.urlopen(request, timeout=3)
-            data = response.read()
-            return data
-        except:
+            r = requests.get(url, headers=headers)
+            if r.status_code != 200:
+                raise Exception
+            return r.text
+        except Exception:
             log("get_http: could not get data from %s" % url)
             xbmc.sleep(1000)
             succeed += 1
